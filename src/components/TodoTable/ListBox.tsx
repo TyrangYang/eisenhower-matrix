@@ -3,7 +3,8 @@ import {Box, Checkbox, Flex, Icon, IconButton, Switch} from '@chakra-ui/react';
 import {GiPencilBrush} from 'react-icons/gi';
 import {BiEraser} from 'react-icons/bi';
 import {useRecoilState} from 'recoil';
-import {oneTodoState, Todo} from '../Atom';
+import {oneTodoState} from '../Atom';
+import {Todo} from '../../type';
 
 interface Props {
     item: Todo;

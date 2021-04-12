@@ -1,17 +1,9 @@
 import {atom, atomFamily} from 'recoil';
+import {ID, Todo} from '../type';
 
-export type ID = string;
-export type Todo = {
-    id: ID;
-    title: string;
-    description: string;
-    completed: boolean;
-    urgent: boolean;
-    important: boolean;
-    inCanvas: boolean;
-};
+type TodoIDListType = {ids: ID[]; initTodoState: {[key: string]: Todo}};
 
-export const TodoIDListWithInitState = atom<{ids: ID[]; initTodoState: {[key: string]: Todo}}>({
+export const TodoIDListWithInitState = atom<TodoIDListType>({
     key: 'TodoIDList',
     default: {ids: [], initTodoState: {}},
 });

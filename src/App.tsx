@@ -1,6 +1,7 @@
 import {Grid, GridItem} from '@chakra-ui/layout';
 import React, {FC} from 'react';
 import {RecoilRoot} from 'recoil';
+import {Canvas} from './components/Canvas/Canvas';
 import TodoTablePanel from './components/TodoTable/TodoTablePanel';
 
 const App: FC = () => {
@@ -10,7 +11,9 @@ const App: FC = () => {
                 <GridItem colSpan={1} border="1px solid #333" padding="3px">
                     <TodoTablePanel />
                 </GridItem>
-                <GridItem colSpan={3} border="1px solid #333"></GridItem>
+                <GridItem colSpan={3} border="1px solid #333">
+                    <Canvas />
+                </GridItem>
             </Grid>
         </RecoilRoot>
     );

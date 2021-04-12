@@ -3,7 +3,8 @@ import React, {FC} from 'react';
 import {v4 as uuidV4} from 'uuid';
 import {useForm} from 'react-hook-form';
 import {useSetRecoilState} from 'recoil';
-import {Todo, TodoIDListWithInitState} from '../Atom';
+import {TodoIDListWithInitState} from '../Atom';
+import {Todo} from '../../type';
 
 interface FormDataInterface {
     itemName: string;
