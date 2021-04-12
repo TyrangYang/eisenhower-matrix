@@ -1,26 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Grid, GridItem} from '@chakra-ui/layout';
+import React, {FC} from 'react';
+import {RecoilRoot} from 'recoil';
+import TodoTablePanel from './components/TodoTable/TodoTablePanel';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App: FC = () => {
+    return (
+        <RecoilRoot>
+            <Grid h="100vh" templateRows="1fr" templateColumns="repeat(4, 1fr)" gap={3} margin="5px">
+                <GridItem colSpan={1} border="1px solid #333" padding="3px">
+                    <TodoTablePanel />
+                </GridItem>
+                <GridItem colSpan={3} border="1px solid #333"></GridItem>
+            </Grid>
+        </RecoilRoot>
+    );
+};
 
 export default App;
