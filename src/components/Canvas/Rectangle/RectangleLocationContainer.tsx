@@ -1,5 +1,5 @@
 import {Box} from '@chakra-ui/react';
-import {ElementStyle} from './Rectangle';
+import {ElementStyle} from '../../../type';
 
 type RectangleLocationContainerProps = {
     position: ElementStyle['position'];

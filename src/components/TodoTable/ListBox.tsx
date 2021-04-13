@@ -20,7 +20,6 @@ const ListBox: FC<Props> = ({item}) => {
     useEffect(() => {
         setOneTodo(item);
     }, [item, setOneTodo]);
-    console.log(oneTodo);
     return (
         <Box h="60px">
             <Flex justifyContent="space-between" alignItems="center">

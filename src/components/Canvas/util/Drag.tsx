@@ -1,5 +1,5 @@
 import {DraggableCore} from 'react-draggable';
-import {ElementStyle} from '../Rectangle/Rectangle';
+import {ElementStyle} from '../../../type';
 
 type DragProps = {
     position: ElementStyle['position'];

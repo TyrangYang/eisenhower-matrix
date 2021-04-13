@@ -8,3 +8,8 @@ export type Todo = {
     important: boolean;
     inCanvas: boolean;
 };
+
+export type ElementStyle = {
+    position: {top: number; left: number};
+    size: {width: number; height: number};
+};
