@@ -1,10 +1,10 @@
 import {Box, Flex, Grid, GridItem, Text} from '@chakra-ui/react';
 import {useRecoilValue} from 'recoil';
-import {TodoIDListWithInitState} from '../Atom';
+import {TodoIDListAtom} from '../Atom';
 import {Rectangle} from './Rectangle/Rectangle';
 
 export const Canvas: React.FC = () => {
-    const {ids} = useRecoilValue(TodoIDListWithInitState);
+    const ids = useRecoilValue(TodoIDListAtom);
     return (
         <Flex
             direction="column"

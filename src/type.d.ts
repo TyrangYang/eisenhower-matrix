@@ -7,6 +7,7 @@ export type Todo = {
     urgent: boolean;
     important: boolean;
     inCanvas: boolean;
+    isEditing: boolean;
 };
 
 export type ElementStyle = {

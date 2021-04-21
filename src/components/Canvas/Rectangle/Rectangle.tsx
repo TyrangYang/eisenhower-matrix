@@ -4,18 +4,18 @@ import {RectangleInner} from './RectangleInner';
 import {Drag} from '../util/Drag';
 // import {Resize} from '../util/Resize';
 import {ID} from '../../../type';
-import {oneTodoState, RectangleState} from '../../Atom';
+import {oneTodoStateAtom, RectangleStateAtom} from '../../Atom';
 import {useRecoilState, useRecoilValue} from 'recoil';
 
 export const Rectangle = ({itemID}: {itemID: ID}) => {
-    const oneTodo = useRecoilValue(oneTodoState(itemID));
+    const oneTodo = useRecoilValue(oneTodoStateAtom(itemID));
 
     const [isSelected, setIsSelected] = useState(false);
     // const [rectangleState, setRectangleState] = useState({
     //     position: {top: 100, left: 100},
     //     size: {width: 200, height: 100},
     // });
-    const [rectangleState, setRectangleState] = useRecoilState(RectangleState(itemID));
+    const [rectangleState, setRectangleState] = useRecoilState(RectangleStateAtom(itemID));
 
     // change start position
     useEffect(() => {
