@@ -7,7 +7,7 @@ import ListBox from './ListBox';
 
 const ListTable: FC = () => {
     const todoList = useRecoilValue(TodoIDListAtom);
-    console.log(todoList);
+
     return (
         <div>
             <VStack divider={<StackDivider borderColor="gray.200" />} spacing={4} align="stretch" padding={3}>

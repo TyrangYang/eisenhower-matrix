@@ -1,5 +1,5 @@
 export type ID = string;
-export type Todo = {
+export type TodoType = {
     id: ID;
     title: string;
     description: string;
@@ -10,7 +10,12 @@ export type Todo = {
     isEditing: boolean;
 };
 
-export type ElementStyle = {
+export type RectangleStyleType = {
     position: {top: number; left: number};
     size: {width: number; height: number};
+};
+
+export type CanvasStateType = {
+    height: number;
+    width: number;
 };

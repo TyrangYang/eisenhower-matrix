@@ -1,6 +1,8 @@
+// Container for content in rectangle
+
 import {Box} from '@chakra-ui/react';
 
-export const getBorderColor = (visible: boolean) => {
+const getBorderColor = (visible: boolean) => {
     return visible ? '#CCC' : 'transparent';
 };
 

@@ -1,13 +1,13 @@
 import {Resizable, ResizeHandle} from 'react-resizable';
-import {ElementStyle} from '../../../type';
+import {RectangleStyleType} from '../../../type';
 import {Handle} from './Handle';
 
 const handlePlacements: ResizeHandle[] = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
 
 type ResizeProps = {
     selected: boolean;
-    onResize: (style: ElementStyle) => void;
-} & ElementStyle;
+    onResize: (style: RectangleStyleType) => void;
+} & RectangleStyleType;
 
 export const Resize: React.FC<ResizeProps> = ({selected, children, position, size, onResize}) => {
     return (

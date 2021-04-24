@@ -1,12 +1,43 @@
 import {Box, Flex, Grid, GridItem, Text} from '@chakra-ui/react';
-import {useRecoilValue} from 'recoil';
-import {TodoIDListAtom} from '../Atom';
+import {throttle} from 'lodash';
+import {useEffect, useRef} from 'react';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
+import {CanvasStateAtom, TodoIDListAtom} from '../Atom';
 import {Rectangle} from './Rectangle/Rectangle';
 
 export const Canvas: React.FC = () => {
     const ids = useRecoilValue(TodoIDListAtom);
+    const setCanvasState = useSetRecoilState(CanvasStateAtom);
+    const canvasRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleWindowResize = throttle(() => {
+            let height: number, width: number;
+            if (canvasRef.current !== null) {
+                height = canvasRef.current.clientHeight;
+                width = canvasRef.current.clientWidth;
+                setCanvasState({height, width});
+            }
+        }, 300);
+
+        window.addEventListener('resize', handleWindowResize);
+
+        return () => {
+            window.removeEventListener('resize', handleWindowResize);
+        };
+    }, [canvasRef, setCanvasState]);
+
+    useEffect(() => {
+        let height: number, width: number;
+        if (canvasRef.current !== null) {
+            height = canvasRef.current.clientHeight;
+            width = canvasRef.current.clientWidth;
+            setCanvasState({height, width});
+        }
+    }, [setCanvasState]);
     return (
         <Flex
+            ref={canvasRef}
             direction="column"
             width="100%"
             height="100%"

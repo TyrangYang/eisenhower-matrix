@@ -17,7 +17,7 @@ import {VscCheck, VscClose} from 'react-icons/vsc';
 import {BiEraser, BiDotsHorizontalRounded} from 'react-icons/bi';
 import {useRecoilState, useResetRecoilState, useSetRecoilState} from 'recoil';
 import {oneTodoStateAtom, TodoIDListAtom} from '../Atom';
-import {ID, Todo} from '../../type';
+import {ID, TodoType} from '../../type';
 import {useForm} from 'react-hook-form';
 import ConfirmDeleteDialog from '../utils/ConfirmDeleteDialog';
 
@@ -25,8 +25,15 @@ interface Props {
     itemID: ID;
 }
 
-const toggleOneTodo = (prev: Todo, felid: 'completed' | 'urgent' | 'important' | 'inCanvas'): Todo => {
+const toggleOneTodo = (
+    prev: TodoType,
+    felid: 'completed' | 'urgent' | 'important' | 'inCanvas' | 'isEditing',
+): TodoType => {
     return {...prev, [felid]: !prev[felid]};
+};
+
+const removeOneIDInIDList = (list: ID[], id: ID) => {
+    return list.filter((eachID) => eachID !== id);
 };
 
 const ListBox: FC<Props> = ({itemID}) => {
@@ -52,6 +59,7 @@ const ListBox: FC<Props> = ({itemID}) => {
                         })}>
                         <Input
                             placeholder="Type a title"
+                            autoFocus
                             {...register('newTitleName', {
                                 required: true,
                                 maxLength: '30',
@@ -71,7 +79,12 @@ const ListBox: FC<Props> = ({itemID}) => {
                             <IconButton
                                 aria-label="close"
                                 colorScheme="red"
-                                onClick={() => setIDs((prev) => prev.filter((id) => id !== itemID))}
+                                onClick={() => {
+                                    // click close just after initialization
+                                    if (oneTodo.title === '') setIDs((prev) => removeOneIDInIDList(prev, itemID));
+                                    // click close when canceling edition
+                                    else setOneTodo((prev) => toggleOneTodo(prev, 'isEditing'));
+                                }}
                                 isRound
                                 icon={<Icon as={VscClose} />}
                             />
@@ -125,21 +138,19 @@ const ListBox: FC<Props> = ({itemID}) => {
                     />
 
                     <Menu>
-                        <MenuButton>
-                            <IconButton
-                                backgroundColor="whitesmoke"
-                                aria-label="remove-new-todo-form-submit"
-                                size="md"
-                                isRound
-                                icon={<Icon as={BiDotsHorizontalRounded} />}
-                            />
-                        </MenuButton>
+                        <MenuButton as={IconButton} aria-label="todo-actions" icon={<BiDotsHorizontalRounded />} />
                         <MenuList>
                             <MenuItem
                                 onClick={() => {
                                     setIsDeleteDialogOpen(true);
                                 }}>
                                 Delete
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    setOneTodo((prev) => toggleOneTodo(prev, 'isEditing'));
+                                }}>
+                                {'Edit Title Name'}
                             </MenuItem>
                         </MenuList>
                     </Menu>
@@ -149,7 +160,7 @@ const ListBox: FC<Props> = ({itemID}) => {
                         onClose={onDeleteDialogClose}
                         onClickConfirm={() => {
                             onDeleteDialogClose();
-                            setIDs((prev) => prev.filter((id) => id !== itemID));
+                            setIDs((prev) => removeOneIDInIDList(prev, itemID));
                             resetOneTodo();
                         }}
                     />

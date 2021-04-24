@@ -24,7 +24,7 @@ const ConfirmDeleteDialog: FC<Props> = ({isOpen, onClose, onClickConfirm}) => {
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            Delete Customer
+                            Delete TODO ?
                         </AlertDialogHeader>
 
                         <AlertDialogBody>Are you sure? You can't undo this action afterwards.</AlertDialogBody>

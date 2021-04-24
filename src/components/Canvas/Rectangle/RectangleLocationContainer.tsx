@@ -1,9 +1,11 @@
+// location container handel rectangle position and size
+
 import {Box} from '@chakra-ui/react';
-import {ElementStyle} from '../../../type';
+import {RectangleStyleType} from '../../../type';
 
 type RectangleLocationContainerProps = {
-    position: ElementStyle['position'];
-    size: ElementStyle['size'];
+    position: RectangleStyleType['position'];
+    size: RectangleStyleType['size'];
     onSelect: () => void;
 };
 
