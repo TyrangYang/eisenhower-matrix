@@ -10,6 +10,7 @@ export const Canvas: React.FC = () => {
     const setCanvasState = useSetRecoilState(CanvasStateAtom);
     const canvasRef = useRef<HTMLDivElement>(null);
 
+    // change canvas size when resizing the windows
     useEffect(() => {
         const handleWindowResize = throttle(() => {
             let height: number, width: number;
@@ -27,6 +28,7 @@ export const Canvas: React.FC = () => {
         };
     }, [canvasRef, setCanvasState]);
 
+    // set canvas size
     useEffect(() => {
         let height: number, width: number;
         if (canvasRef.current !== null) {
@@ -35,6 +37,7 @@ export const Canvas: React.FC = () => {
             setCanvasState({height, width});
         }
     }, [setCanvasState]);
+
     return (
         <Flex
             ref={canvasRef}

@@ -15,11 +15,11 @@ import {
 import {GiPencilBrush} from 'react-icons/gi';
 import {VscCheck, VscClose} from 'react-icons/vsc';
 import {BiEraser, BiDotsHorizontalRounded} from 'react-icons/bi';
-import {useRecoilState, useResetRecoilState, useSetRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 import {oneTodoStateAtom, TodoIDListAtom} from '../Atom';
 import {ID, TodoType} from '../../type';
 import {useForm} from 'react-hook-form';
-import ConfirmDeleteDialog from '../utils/ConfirmDeleteDialog';
+import ConfirmDeleteDialog from '../widgets/ConfirmDeleteDialog';
 
 interface Props {
     itemID: ID;
@@ -38,7 +38,6 @@ const removeOneIDInIDList = (list: ID[], id: ID) => {
 
 const ListBox: FC<Props> = ({itemID}) => {
     const [oneTodo, setOneTodo] = useRecoilState(oneTodoStateAtom(itemID));
-    const resetOneTodo = useResetRecoilState(oneTodoStateAtom(itemID));
     const setIDs = useSetRecoilState(TodoIDListAtom);
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -51,7 +50,7 @@ const ListBox: FC<Props> = ({itemID}) => {
     return (
         <Box h="40px">
             {oneTodo.isEditing ? (
-                <Flex justifyContent="space-evenly" alignItems="center">
+                <Flex justifyContent="space-between" alignItems="center">
                     <form
                         id={`addNewTodo-${oneTodo?.id}`}
                         onSubmit={handleSubmit((data) => {
@@ -93,7 +92,13 @@ const ListBox: FC<Props> = ({itemID}) => {
                 </Flex>
             ) : (
                 <Flex justifyContent="space-between" alignItems="center">
-                    <Box w="40%">{oneTodo?.title}</Box>
+                    <Box
+                        w="40%"
+                        onDoubleClick={() => {
+                            setOneTodo((prev) => toggleOneTodo(prev, 'isEditing'));
+                        }}>
+                        {oneTodo?.title}
+                    </Box>
 
                     {/* <Checkbox
                         size="lg"
@@ -161,7 +166,6 @@ const ListBox: FC<Props> = ({itemID}) => {
                         onClickConfirm={() => {
                             onDeleteDialogClose();
                             setIDs((prev) => removeOneIDInIDList(prev, itemID));
-                            resetOneTodo();
                         }}
                     />
                 </Flex>
