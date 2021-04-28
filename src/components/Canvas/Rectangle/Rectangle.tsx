@@ -72,8 +72,10 @@ export const Rectangle = ({itemID}: {itemID: ID}) => {
                     });
                 }}
                 range={{
-                    leftMost: canvasState.width - rectangleState.size.width,
-                    topMost: canvasState.height - rectangleState.size.height,
+                    leftMin: 0,
+                    topMin: 0,
+                    leftMax: canvasState.width - rectangleState.size.width,
+                    topMax: canvasState.height - rectangleState.size.height,
                 }}>
                 {/* drag component */}
                 <div

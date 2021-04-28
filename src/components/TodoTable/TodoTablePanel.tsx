@@ -1,17 +1,20 @@
 import {Flex} from '@chakra-ui/layout';
+import {Box} from '@chakra-ui/react';
 import React, {FC} from 'react';
-import AddTodo from './AddTodo';
+import AddTodoIconBtn from './AddTodoIconBtn';
+import AddTodoForm from './AddTodoForm';
 import ListTable from './ListTable';
 
 const TodoTablePanel: FC = () => {
     return (
-        <div>
-            <ListTable />
+        <Box padding={3}>
+            <AddTodoForm />
             <br />
+            <ListTable />
             <Flex justifyContent="center">
-                <AddTodo />
+                <AddTodoIconBtn />
             </Flex>
-        </div>
+        </Box>
     );
 };
 export default TodoTablePanel;

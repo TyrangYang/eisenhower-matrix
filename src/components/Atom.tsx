@@ -1,4 +1,4 @@
-import {atom, AtomEffect, atomFamily, DefaultValue} from 'recoil';
+import {atom, AtomEffect, atomFamily, DefaultValue, selector} from 'recoil';
 import {RectangleStyleType, ID, TodoType, CanvasStateType} from '../type';
 import {debounce} from 'lodash';
 
@@ -10,6 +10,7 @@ enum localStorageKeyName {
     RECTANGLE_STATE = 'RECTANGLE_STATE',
 }
 
+// store atom in local storage
 const localStorageEffect = (key: string): AtomEffect<any> => ({setSelf, onSet}) => {
     const savedValue = localStorage.getItem(key);
     // if value in local storage
@@ -24,7 +25,7 @@ const localStorageEffect = (key: string): AtomEffect<any> => ({setSelf, onSet}) 
     );
 };
 
-const gc_localStorage: AtomEffect<string[]> = ({onSet}) => {
+const gc_localStorage_effect: AtomEffect<ID[]> = ({onSet}) => {
     onSet((newValue) => {
         if (newValue instanceof DefaultValue) return;
 
@@ -36,11 +37,8 @@ const gc_localStorage: AtomEffect<string[]> = ({onSet}) => {
                 else return prev;
             }, new Set<string>());
 
-        console.log(storageExistIDs);
         storageExistIDs.forEach((e) => {
-            console.log(!newValue.includes(e));
             if (!newValue.includes(e)) {
-                console.log('should remove', e);
                 localStorage.removeItem(`RECTANGLE_STATE_${e}`);
                 localStorage.removeItem(`TODO_ITEM_${e}`);
             }
@@ -48,15 +46,10 @@ const gc_localStorage: AtomEffect<string[]> = ({onSet}) => {
     });
 };
 
-// export const TempNewTodo = atom<Todo>({
-//     key: 'tempNewTodo',
-//     default: {id: '', title: '', description: '', important: false, inCanvas: false, urgent: false, completed: false},
-// });
-
 export const TodoIDListAtom = atom<TodoIDListType>({
     key: 'TodoIDList',
     default: [],
-    effects_UNSTABLE: [localStorageEffect(localStorageKeyName.ID_LIST), gc_localStorage],
+    effects_UNSTABLE: [localStorageEffect(localStorageKeyName.ID_LIST), gc_localStorage_effect],
 });
 
 export const oneTodoStateAtom = atomFamily<TodoType, ID>({
@@ -76,7 +69,7 @@ export const oneTodoStateAtom = atomFamily<TodoType, ID>({
 
 export const RectangleStateAtom = atomFamily<RectangleStyleType, ID>({
     key: 'RectangleState',
-    default: {position: {top: 100, left: 100}, size: {width: 200, height: 100}},
+    default: {position: {top: 100, left: 100}, size: {width: 100, height: 50}},
     effects_UNSTABLE: (id) => [localStorageEffect(`${localStorageKeyName.RECTANGLE_STATE}_${id}`)],
 });
 
@@ -96,3 +89,32 @@ export const CanvasStateAtom = atom<CanvasStateType>({
 //         if (newValue !== null) set(RectangleStateAtom(id), newValue);
 //     },
 // });
+
+// const moveCheckedIDsToEnd = useRecoilCallback(
+//     ({set, snapshot}) => (ids: ID[]) => {
+//         const sortTmp = ids.map((id) => snapshot.getLoadable(oneTodoStateAtom(id)).getValue());
+//         sortTmp.sort((a, b) => {
+//             if (a.completed && !b.completed) return 1;
+//             else if (!a.completed && b.completed) return -1;
+//             else return 0;
+//         });
+//         set(
+//             TodoIDListAtom,
+//             sortTmp.map((e) => e.id),
+//         );
+//     },
+//     [],
+// );
+export const sortTodoIDsList = selector<ID[]>({
+    key: 'sortTodoIDsList',
+    get: ({get}) => {
+        const ids = get(TodoIDListAtom);
+        const sortTmp = ids.map((id) => get(oneTodoStateAtom(id)));
+        sortTmp.sort((a, b) => {
+            if (a.completed && !b.completed) return 1;
+            else if (!a.completed && b.completed) return -1;
+            else return 0;
+        });
+        return sortTmp.map((e) => e.id);
+    },
+});

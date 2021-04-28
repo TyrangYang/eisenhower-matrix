@@ -48,7 +48,7 @@ const ListBox: FC<Props> = ({itemID}) => {
     };
 
     return (
-        <Box h="40px">
+        <Box h="50px" marginBottom={10}>
             {oneTodo.isEditing ? (
                 <Flex justifyContent="space-between" alignItems="center">
                     <form
@@ -92,6 +92,13 @@ const ListBox: FC<Props> = ({itemID}) => {
                 </Flex>
             ) : (
                 <Flex justifyContent="space-between" alignItems="center">
+                    <Checkbox
+                        size="lg"
+                        isChecked={oneTodo?.completed}
+                        onChange={() => {
+                            setOneTodo((prev) => toggleOneTodo(prev, 'completed'));
+                        }}
+                    />
                     <Box
                         w="40%"
                         onDoubleClick={() => {
@@ -100,13 +107,6 @@ const ListBox: FC<Props> = ({itemID}) => {
                         {oneTodo?.title}
                     </Box>
 
-                    {/* <Checkbox
-                        size="lg"
-                        isChecked={oneTodo?.completed}
-                        onChange={() => {
-                            setOneTodo((prev) => toggleOneTodo(prev, 'completed'));
-                        }}
-                    /> */}
                     <Flex direction="column" justifyContent="center">
                         <Flex>
                             <p>Urgent: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>

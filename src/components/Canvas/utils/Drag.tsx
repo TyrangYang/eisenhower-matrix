@@ -1,33 +1,34 @@
+import {useRef} from 'react';
 import {DraggableCore} from 'react-draggable';
 import {RectangleStyleType} from '../../../type';
 
 type DragProps = {
-    position: RectangleStyleType['position'];
+    position: RectangleStyleType['position']; // Position represent left top point of child location
     onDrag: (position: RectangleStyleType['position']) => void;
-    range: {leftMost: number; topMost: number};
+    range: {leftMax: number; topMax: number; leftMin: number; topMin: number};
 };
 
 export const Drag: React.FC<DragProps> = ({position, onDrag, range, children}) => {
-    // const nodeRef = useRef(null);
+    const nodeRef = useRef(null);
+    const {leftMin, leftMax, topMin, topMax} = range;
     return (
         <DraggableCore
-            // nodeRef={nodeRef}
+            nodeRef={nodeRef}
             onDrag={(event: any) => {
                 let left = event.movementX + position.left;
                 let top = event.movementY + position.top;
-                if (left < 0) left = 0;
-                if (top < 0) top = 0;
-                if (left > range.leftMost) left = range.leftMost;
-                if (top > range.topMost) top = range.topMost;
+                if (left < leftMin) left = leftMin;
+                if (top < topMin) top = topMin;
+                if (left > leftMax) left = leftMax;
+                if (top > topMax) top = topMax;
                 onDrag({
                     left,
                     top,
                 });
             }}>
-            {/* <div style={{width: 100, height: 100, border: '1px solid #f00'}} ref={nodeRef}>
-                {children}
-            </div> */}
-            {children}
+            {/* style={{width: 100, height: 100, border: '1px solid #f00'}} */}
+            <div ref={nodeRef}>{children}</div>
+            {/* {children} */}
         </DraggableCore>
     );
 };
