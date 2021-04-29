@@ -3,7 +3,7 @@ import React, {FC} from 'react';
 import {v4 as uuidV4} from 'uuid';
 import {useForm} from 'react-hook-form';
 import {useRecoilCallback} from 'recoil';
-import {oneTodoStateAtom, TodoIDListAtom} from '../Atom';
+import {OneTodoStateAtom, TodoIDListAtom} from '../Atom';
 import {ID, TodoType} from '../../type';
 
 interface FormDataInterface {
@@ -21,7 +21,7 @@ const AddTodoForm: FC = () => {
     const createNewTodo = useRecoilCallback(
         ({set}) => (id: ID, newTodo: TodoType) => {
             set(TodoIDListAtom, (prev) => [...prev, id]);
-            set(oneTodoStateAtom(id), newTodo);
+            set(OneTodoStateAtom(id), newTodo);
         },
         [],
     );

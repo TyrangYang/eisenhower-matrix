@@ -19,3 +19,5 @@ export type CanvasStateType = {
     height: number;
     width: number;
 };
+
+export type RectangleRangeType = {leftMax: number; topMax: number; leftMin: number; topMin: number};

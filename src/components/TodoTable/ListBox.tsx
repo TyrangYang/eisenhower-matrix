@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import {
     Box,
     Checkbox,
@@ -15,9 +15,9 @@ import {
 import {GiPencilBrush} from 'react-icons/gi';
 import {VscCheck, VscClose} from 'react-icons/vsc';
 import {BiEraser, BiDotsHorizontalRounded} from 'react-icons/bi';
-import {useRecoilState, useSetRecoilState} from 'recoil';
-import {oneTodoStateAtom, TodoIDListAtom} from '../Atom';
-import {ID, TodoType} from '../../type';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import {AreaRangeAtom, OneTodoStateAtom, RectangleStateAtom, TodoIDListAtom} from '../Atom';
+import {ID, RectangleRangeType, TodoType} from '../../type';
 import {useForm} from 'react-hook-form';
 import ConfirmDeleteDialog from '../widgets/ConfirmDeleteDialog';
 
@@ -37,8 +37,10 @@ const removeOneIDInIDList = (list: ID[], id: ID) => {
 };
 
 const ListBox: FC<Props> = ({itemID}) => {
-    const [oneTodo, setOneTodo] = useRecoilState(oneTodoStateAtom(itemID));
+    const [oneTodo, setOneTodo] = useRecoilState(OneTodoStateAtom(itemID));
     const setIDs = useSetRecoilState(TodoIDListAtom);
+    const setRectangle = useSetRecoilState(RectangleStateAtom(itemID));
+    const AreaRange = useRecoilValue(AreaRangeAtom);
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const {register, handleSubmit} = useForm();
@@ -46,6 +48,19 @@ const ListBox: FC<Props> = ({itemID}) => {
     const onDeleteDialogClose = () => {
         setIsDeleteDialogOpen(false);
     };
+
+    const getAreaInitLocation = useCallback(
+        (urgent: boolean, important: boolean) => {
+            let range: RectangleRangeType;
+            if (urgent && important) range = AreaRange.topLeft;
+            else if (urgent && !important) range = AreaRange.bottomLeft;
+            else if (!urgent && important) range = AreaRange.topRight;
+            else range = AreaRange.bottomRight;
+
+            return {top: range.topMin, left: range.leftMin};
+        },
+        [AreaRange],
+    );
 
     return (
         <Box h="50px" marginBottom={10}>
@@ -116,6 +131,9 @@ const ListBox: FC<Props> = ({itemID}) => {
                                 size="md"
                                 onChange={() => {
                                     setOneTodo((prev) => toggleOneTodo(prev, 'urgent'));
+                                    let willUrgent = !oneTodo.urgent;
+                                    let initRectPosition = getAreaInitLocation(willUrgent, oneTodo.important);
+                                    setRectangle((prev) => ({...prev, position: initRectPosition}));
                                 }}
                             />
                         </Flex>
@@ -127,6 +145,9 @@ const ListBox: FC<Props> = ({itemID}) => {
                                 size="md"
                                 onChange={() => {
                                     setOneTodo((prev) => toggleOneTodo(prev, 'important'));
+                                    let willImportant = !oneTodo.important;
+                                    let initRectPosition = getAreaInitLocation(oneTodo.urgent, willImportant);
+                                    setRectangle((prev) => ({...prev, position: initRectPosition}));
                                 }}
                             />
                         </Flex>

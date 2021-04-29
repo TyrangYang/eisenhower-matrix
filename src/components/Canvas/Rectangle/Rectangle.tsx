@@ -1,19 +1,29 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {RectangleLocationContainer} from './RectangleLocationContainer';
 import {RectangleInner} from './RectangleInner';
 import {Drag} from '../utils/Drag';
 // import {Resize} from '../util/Resize';
 import {ID} from '../../../type';
-import {CanvasStateAtom, oneTodoStateAtom, RectangleStateAtom} from '../../Atom';
+import {AreaRangeAtom, CanvasStateAtom, OneTodoStateAtom, RectangleStateAtom} from '../../Atom';
 import {useRecoilState, useRecoilValue} from 'recoil';
 
 export const Rectangle = ({itemID}: {itemID: ID}) => {
     const [isSelected, setIsSelected] = useState(false);
 
-    const oneTodo = useRecoilValue(oneTodoStateAtom(itemID));
+    const oneTodo = useRecoilValue(OneTodoStateAtom(itemID));
 
     const [rectangleState, setRectangleState] = useRecoilState(RectangleStateAtom(itemID));
     const canvasState = useRecoilValue(CanvasStateAtom);
+
+    const AreaRange = useRecoilValue(AreaRangeAtom);
+
+    const range = useMemo(() => {
+        const {urgent, important} = oneTodo;
+        if (urgent && important) return AreaRange.topLeft;
+        else if (urgent && !important) return AreaRange.bottomLeft;
+        else if (!urgent && important) return AreaRange.topRight;
+        else return AreaRange.bottomRight;
+    }, [AreaRange, oneTodo]);
 
     //  change location
     useEffect(() => {
@@ -71,12 +81,15 @@ export const Rectangle = ({itemID}: {itemID: ID}) => {
                         position,
                     });
                 }}
-                range={{
-                    leftMin: 0,
-                    topMin: 0,
-                    leftMax: canvasState.width - rectangleState.size.width,
-                    topMax: canvasState.height - rectangleState.size.height,
-                }}>
+                range={
+                    range
+                    //     {
+                    //     leftMin: 0,
+                    //     topMin: 0,
+                    //     leftMax: canvasState.width - rectangleState.size.width,
+                    //     topMax: canvasState.height - rectangleState.size.height,
+                    // }
+                }>
                 {/* drag component */}
                 <div
                     style={{

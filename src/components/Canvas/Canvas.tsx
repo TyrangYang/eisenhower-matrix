@@ -1,46 +1,71 @@
 import {Box, Flex, Grid, GridItem, Text} from '@chakra-ui/react';
 import {throttle} from 'lodash';
-import {useEffect, useRef} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
-import {CanvasStateAtom, TodoIDListAtom} from '../Atom';
+import {AreaRangeAtom, CanvasStateAtom, TodoIDListAtom} from '../Atom';
 import {Rectangle} from './Rectangle/Rectangle';
+import TestPoint from './utils/TestPoint';
 
 export const Canvas: React.FC = () => {
     const ids = useRecoilValue(TodoIDListAtom);
     const setCanvasState = useSetRecoilState(CanvasStateAtom);
+    const setAreaRange = useSetRecoilState(AreaRangeAtom);
     const canvasRef = useRef<HTMLDivElement>(null);
+    const topLeftAreaRef = useRef<HTMLDivElement>(null);
+    const topRightAreaRef = useRef<HTMLDivElement>(null);
+    const bottomLeftAreaRef = useRef<HTMLDivElement>(null);
+    const bottomRightAreaRef = useRef<HTMLDivElement>(null);
 
-    // change canvas size when resizing the windows
-    useEffect(() => {
-        const handleWindowResize = throttle(() => {
-            let height: number, width: number;
-            if (canvasRef.current !== null) {
-                height = canvasRef.current.clientHeight;
-                width = canvasRef.current.clientWidth;
-                setCanvasState({height, width});
-            }
-        }, 300);
-
-        window.addEventListener('resize', handleWindowResize);
-
-        return () => {
-            window.removeEventListener('resize', handleWindowResize);
-        };
-    }, [canvasRef, setCanvasState]);
-
-    // set canvas size
-    useEffect(() => {
+    const changeCanvasState = useCallback(() => {
         let height: number, width: number;
         if (canvasRef.current !== null) {
             height = canvasRef.current.clientHeight;
             width = canvasRef.current.clientWidth;
             setCanvasState({height, width});
         }
-    }, [setCanvasState]);
+
+        const refToRange = (ref: HTMLDivElement) => {
+            const {offsetTop, offsetLeft, offsetHeight, offsetWidth} = ref;
+            return {
+                leftMin: offsetLeft,
+                topMin: offsetTop,
+                leftMax: offsetLeft + offsetWidth,
+                topMax: offsetTop + offsetHeight,
+            };
+        };
+        if (
+            topLeftAreaRef.current !== null &&
+            topRightAreaRef.current !== null &&
+            bottomLeftAreaRef.current !== null &&
+            bottomRightAreaRef.current !== null
+        ) {
+            setAreaRange({
+                topLeft: refToRange(topLeftAreaRef.current),
+                topRight: refToRange(topRightAreaRef.current),
+                bottomLeft: refToRange(bottomLeftAreaRef.current),
+                bottomRight: refToRange(bottomRightAreaRef.current),
+            });
+        }
+    }, [setCanvasState, setAreaRange]);
+
+    // change canvas size when resizing the windows
+    useEffect(() => {
+        const handleWindowResize = throttle(changeCanvasState, 300);
+
+        window.addEventListener('resize', handleWindowResize);
+
+        return () => {
+            window.removeEventListener('resize', handleWindowResize);
+        };
+    }, [changeCanvasState]);
+
+    // set canvas size
+    useEffect(changeCanvasState, [changeCanvasState]);
 
     return (
         <Flex
             ref={canvasRef}
+            position="relative"
             direction="column"
             width="100%"
             height="100%"
@@ -56,19 +81,20 @@ export const Canvas: React.FC = () => {
                 <GridItem>
                     <Text style={{writingMode: 'vertical-rl', textOrientation: 'upright'}}>IMPORTANT</Text>
                 </GridItem>
-                <GridItem background="rgb(65,208,138)" borderRadius={15}></GridItem>
-                <GridItem background="rgb(234,195,27)" borderRadius={15}></GridItem>
+                <GridItem ref={topLeftAreaRef} background="rgb(65,208,138)" borderRadius={15}></GridItem>
+                <GridItem ref={topRightAreaRef} background="rgb(234,195,27)" borderRadius={15}></GridItem>
                 <GridItem>
                     <Text style={{writingMode: 'vertical-rl', textOrientation: 'upright'}}>NOT IMPORTANT</Text>
                 </GridItem>
-                <GridItem background="rgb(44,138,162)" borderRadius={15}></GridItem>
-                <GridItem background="rgb(208,38,0)" borderRadius={15}></GridItem>
+                <GridItem ref={bottomLeftAreaRef} background="rgb(44,138,162)" borderRadius={15}></GridItem>
+                <GridItem ref={bottomRightAreaRef} background="rgb(208,38,0)" borderRadius={15}></GridItem>
             </Grid>
             <Box position="absolute">
                 {ids.map((eachID) => (
                     <Rectangle key={`canvas-${eachID}`} itemID={eachID} />
                 ))}
             </Box>
+            <TestPoint />
         </Flex>
     );
 };
