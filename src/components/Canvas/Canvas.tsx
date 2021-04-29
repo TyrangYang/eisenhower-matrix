@@ -4,7 +4,6 @@ import {useCallback, useEffect, useRef} from 'react';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {AreaRangeAtom, CanvasStateAtom, TodoIDListAtom} from '../Atom';
 import {Rectangle} from './Rectangle/Rectangle';
-import TestPoint from './utils/TestPoint';
 
 export const Canvas: React.FC = () => {
     const ids = useRecoilValue(TodoIDListAtom);
@@ -94,7 +93,6 @@ export const Canvas: React.FC = () => {
                     <Rectangle key={`canvas-${eachID}`} itemID={eachID} />
                 ))}
             </Box>
-            <TestPoint />
         </Flex>
     );
 };

@@ -1,35 +1,30 @@
 import {StackDivider, VStack} from '@chakra-ui/react';
-import React, {FC, forwardRef} from 'react';
+import React, {FC} from 'react';
 
 import {useRecoilValue} from 'recoil';
 import {sortTodoIDsList} from '../Atom';
 import ListBox from './ListBox';
 
-import FlipMove from 'react-flip-move';
-
-const FunctionalListBox = forwardRef<any>((props: any, ref) => {
-    return (
-        <div ref={ref}>
-            <ListBox itemID={props.itemID} />
-        </div>
-    );
-});
+import {Flipper, Flipped} from 'react-flip-toolkit';
 
 const ListTable: FC = () => {
     const todoList = useRecoilValue(sortTodoIDsList);
 
     return (
         <div>
-            <VStack divider={<StackDivider borderColor="gray.200" />} spacing={4} align="stretch">
-                {/* {todoList.map((id) => {
-                        return <ListBox key={id} itemID={id} />;
-                    })} */}
-                <FlipMove>
+            <Flipper flipKey={todoList.join('')}>
+                <VStack divider={<StackDivider borderColor="gray.200" />} spacing={4} align="stretch">
                     {todoList.map((id) => {
-                        return <FunctionalListBox key={id} {...{itemID: id}} />;
+                        return (
+                            <Flipped key={id} flipId={id}>
+                                <div>
+                                    <ListBox itemID={id} />
+                                </div>
+                            </Flipped>
+                        );
                     })}
-                </FlipMove>
-            </VStack>
+                </VStack>
+            </Flipper>
         </div>
     );
 };
