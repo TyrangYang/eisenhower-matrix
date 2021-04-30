@@ -75,7 +75,7 @@ export const RectangleStateAtom = atomFamily<RectangleStyleType, ID>({
 
 export const CanvasStateAtom = atom<CanvasStateType>({
     key: 'CanvasState',
-    default: {height: 1000, width: 1000},
+    default: {height: 3000, width: 3000},
 });
 
 export const AreaRangeAtom = atom<{

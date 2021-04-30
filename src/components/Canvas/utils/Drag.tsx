@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {memo, useEffect, useRef} from 'react';
 import {DraggableCore} from 'react-draggable';
 import {RectangleRangeType, RectangleStyleType} from '../../../type';
 
@@ -8,9 +8,19 @@ type DragProps = {
     range: RectangleRangeType;
 };
 
-export const Drag: React.FC<DragProps> = ({position, onDrag, range, children}) => {
+export const Drag: React.FC<DragProps> = memo(({position, onDrag, range, children}) => {
     const nodeRef = useRef(null);
     const {leftMin, leftMax, topMin, topMax} = range;
+    // useEffect(() => {
+    //     const {leftMin, leftMax, topMin, topMax} = range;
+    //     let {left, top} = position;
+    //     if (left < leftMin) left = leftMin;
+    //     if (top < topMin) top = topMin;
+    //     if (left > leftMax) left = leftMax;
+    //     if (top > topMax) top = topMax;
+    //     onDrag({left, top});
+    // }, []);
+
     return (
         <DraggableCore
             nodeRef={nodeRef}
@@ -21,14 +31,11 @@ export const Drag: React.FC<DragProps> = ({position, onDrag, range, children}) =
                 if (top < topMin) top = topMin;
                 if (left > leftMax) left = leftMax;
                 if (top > topMax) top = topMax;
-                onDrag({
-                    left,
-                    top,
-                });
+                onDrag({left, top});
             }}>
             {/* style={{width: 100, height: 100, border: '1px solid #f00'}} */}
             <div ref={nodeRef}>{children}</div>
             {/* {children} */}
         </DraggableCore>
     );
-};
+});

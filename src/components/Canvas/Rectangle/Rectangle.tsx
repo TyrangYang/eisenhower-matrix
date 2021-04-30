@@ -8,13 +8,10 @@ import {AreaRangeAtom, CanvasStateAtom, OneTodoStateAtom, RectangleStateAtom} fr
 import {useRecoilState, useRecoilValue} from 'recoil';
 
 export const Rectangle = ({itemID}: {itemID: ID}) => {
-    const [isSelected, setIsSelected] = useState(false);
-
-    const oneTodo = useRecoilValue(OneTodoStateAtom(itemID));
-
     const [rectangleState, setRectangleState] = useRecoilState(RectangleStateAtom(itemID));
-    const canvasState = useRecoilValue(CanvasStateAtom);
-
+    const [isSelected, setIsSelected] = useState(false);
+    const oneTodo = useRecoilValue(OneTodoStateAtom(itemID));
+    // const canvasState = useRecoilValue(CanvasStateAtom);
     const AreaRange = useRecoilValue(AreaRangeAtom);
 
     const range = useMemo(() => {
@@ -26,34 +23,22 @@ export const Rectangle = ({itemID}: {itemID: ID}) => {
     }, [AreaRange, oneTodo]);
 
     //  change location
-    useEffect(() => {
-        let left = rectangleState.position.left;
-        let top = rectangleState.position.top;
-        if (left < 0) left = 0;
-        if (top < 0) top = 0;
-        if (left > canvasState.width - rectangleState.size.width) left = canvasState.width - rectangleState.size.width;
-        if (top > canvasState.height - rectangleState.size.height)
-            top = canvasState.height - rectangleState.size.height;
-        setRectangleState((prev) => ({...prev, position: {left, top}}));
-    }, [
-        canvasState,
-        setRectangleState,
-        rectangleState.size.width,
-        rectangleState.size.height,
-        rectangleState.position.left,
-        rectangleState.position.top,
-    ]);
-    // change start position
     // useEffect(() => {
-    //     if (oneTodo === null) return;
-    //     const {urgent, important} = oneTodo;
-    //     const leftStartPosition = 100 + (urgent ? 0 : 750);
-    //     const topStartPosition = 100 + (important ? 0 : 500);
-    //     setRectangleState((prev) => ({
-    //         ...prev,
-    //         position: {top: topStartPosition, left: leftStartPosition},
-    //     }));
-    // }, [oneTodo, setRectangleState]);
+    //     let {left, top} = rectangleState.position;
+    //     if (left < 0) left = 0;
+    //     if (top < 0) top = 0;
+    //     if (left > range.leftMax - rectangleState.size.width) left = range.leftMax - rectangleState.size.width;
+    //     if (top > range.topMax - rectangleState.size.height) top = range.topMax - rectangleState.size.height;
+    //     setRectangleState((prev) => ({...prev, position: {left, top}}));
+    // }, [
+    //     setRectangleState,
+    //     range,
+    //     rectangleState.size.width,
+    //     rectangleState.size.height,
+    //     rectangleState.position.left,
+    //     rectangleState.position.top,
+    // ]);
+
     if (oneTodo === null || !oneTodo?.inCanvas) return null;
 
     return (
@@ -81,15 +66,12 @@ export const Rectangle = ({itemID}: {itemID: ID}) => {
                         position,
                     });
                 }}
-                range={
-                    range
-                    //     {
-                    //     leftMin: 0,
-                    //     topMin: 0,
-                    //     leftMax: canvasState.width - rectangleState.size.width,
-                    //     topMax: canvasState.height - rectangleState.size.height,
-                    // }
-                }>
+                range={{
+                    leftMin: range.leftMin,
+                    topMin: range.topMin,
+                    leftMax: range.leftMax - rectangleState.size.width,
+                    topMax: range.topMax - rectangleState.size.height,
+                }}>
                 {/* drag component */}
                 <div
                     style={{
