@@ -24,10 +24,7 @@ describe('todo table', () => {
     });
 
     it('use add btn at button', async () => {
-        const list = screen.getByTestId('test-table-list');
-        expect(list.childNodes.length).toBe(0);
         userEvent.click(screen.getByLabelText('addNewTodo'));
-        expect(list.childNodes.length).toBe(1);
         expect(screen.queryByText('todo2')).toBeFalsy();
         userEvent.type(screen.getByPlaceholderText('Type a title'), 'todo2');
         await waitFor(() => userEvent.click(screen.getByLabelText('check')));
@@ -35,7 +32,6 @@ describe('todo table', () => {
     });
 
     it('edit one title', async () => {
-        const list = screen.getByTestId('test-table-list');
         expect(screen.getByText('todo1')).toBeTruthy();
         userEvent.dblClick(screen.getByText('todo1'));
         userEvent.type(screen.getByPlaceholderText('Type a title'), 'todo3');
