@@ -2,7 +2,7 @@
     "name": "eisenhower-matrix",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://tyrangyang.github.io",
+    "homepage": "https://tyrangyang.github.io/eisenhower-matrix",
     "dependencies": {
         "@chakra-ui/react": "^1.5.0",
         "@emotion/react": "^11.1.5",
