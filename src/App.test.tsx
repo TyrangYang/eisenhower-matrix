@@ -4,30 +4,42 @@ import {RecoilRoot} from 'recoil';
 import TodoTablePanel from './components/TodoTable/TodoTablePanel';
 import userEvent from '@testing-library/user-event';
 
-it('use add btn at button', () => {
-    const {getByTestId, getByLabelText, debug} = render(
-        <RecoilRoot>
-            <TodoTablePanel />
-        </RecoilRoot>,
-    );
-    const list = getByTestId('test-table-list');
-    expect(list.childNodes.length).toBe(0);
-    const btn = getByLabelText('addNewTodo');
-    userEvent.click(btn);
-    expect(list.childNodes.length).toBe(1);
-});
+describe('todo table', () => {
+    beforeEach(() => {
+        render(
+            <RecoilRoot>
+                <TodoTablePanel />
+            </RecoilRoot>,
+        );
+    });
 
-it('use form to add new todo', async () => {
-    const {getByPlaceholderText, getByText, getByTestId, debug} = render(
-        <RecoilRoot>
-            <TodoTablePanel />
-        </RecoilRoot>,
-    );
-    const input = getByPlaceholderText('ADD New TODO');
-    userEvent.type(input, '123');
-    const addBtn = getByText('ADD'); // submit form
-    const list = getByTestId('test-table-list');
-    expect(list.childNodes.length).toBe(0);
-    await waitFor(() => userEvent.click(addBtn));
-    expect(list.childNodes.length).toBe(1);
+    it('use form to add new todo', async () => {
+        userEvent.type(screen.getByPlaceholderText('ADD New TODO'), 'todo1');
+        const list = screen.getByTestId('test-table-list');
+        expect(list.childNodes.length).toBe(0);
+        expect(screen.queryByText('todo1')).toBeFalsy();
+        await waitFor(() => userEvent.click(screen.getByText('ADD'))); // submit form
+        expect(list.childNodes.length).toBe(1);
+        expect(screen.getByText('todo1')).toBeTruthy();
+    });
+
+    it('use add btn at button', async () => {
+        const list = screen.getByTestId('test-table-list');
+        expect(list.childNodes.length).toBe(0);
+        userEvent.click(screen.getByLabelText('addNewTodo'));
+        expect(list.childNodes.length).toBe(1);
+        expect(screen.queryByText('todo2')).toBeFalsy();
+        userEvent.type(screen.getByPlaceholderText('Type a title'), 'todo2');
+        await waitFor(() => userEvent.click(screen.getByLabelText('check')));
+        expect(screen.getByText('todo2')).toBeTruthy();
+    });
+
+    it('edit one title', async () => {
+        const list = screen.getByTestId('test-table-list');
+        expect(screen.getByText('todo1')).toBeTruthy();
+        userEvent.dblClick(screen.getByText('todo1'));
+        userEvent.type(screen.getByPlaceholderText('Type a title'), 'todo3');
+        await waitFor(() => userEvent.click(screen.getByLabelText('check')));
+        expect(screen.getByText('todo3')).toBeTruthy();
+    });
 });
