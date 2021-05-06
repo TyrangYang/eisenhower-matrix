@@ -2,6 +2,7 @@
     "name": "eisenhower-matrix",
     "version": "0.1.0",
     "private": true,
+    "homepage": "https://tyrangyang.github.io",
     "dependencies": {
         "@chakra-ui/react": "^1.5.0",
         "@emotion/react": "^11.1.5",
@@ -34,7 +35,7 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "clean": "rm -rf node_modules coverage"
+        "clean": "rm -rf node_modules coverage build"
     },
     "eslintConfig": {
         "extends": [
