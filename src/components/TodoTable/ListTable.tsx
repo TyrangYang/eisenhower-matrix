@@ -13,7 +13,11 @@ const ListTable: FC = () => {
     return (
         <div>
             <Flipper flipKey={todoList.join('')}>
-                <VStack divider={<StackDivider borderColor="gray.200" />} spacing={4} align="stretch">
+                <VStack
+                    divider={<StackDivider borderColor="gray.200" />}
+                    spacing={4}
+                    align="stretch"
+                    data-testid="test-table-list">
                     {todoList.map((id) => {
                         return (
                             <Flipped key={id} flipId={id}>
